@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.ReserveMapper">
+
+	<select id="getTime" resultType="String">
+		select now();
+	</select>
+	
+	<insert id="insert">
+		insert into reserve (ro_id, re_name, re_password, re_phone, re_startday, re_endday, re_capa, re_price, re_payment, re_datetime) value (#{ro_id}, #{re_name}, #{re_password}, #{re_phone}, #{re_startday}, #{re_endday}, #{re_capa}, #{re_price}, #{re_payment}, now())
+	</insert>
+		
+	<select id="selectAll" resultType="domain.ReserveVO">
+		select * from reserve order by re_id desc
+	</select>
+	
+	<select id="selectByRoomId" resultType="domain.ReserveVO">
+		select * from reserve 
+		<![CDATA[where ro_id = #{ro_id} and re_startday >= #{firstday} and re_startday <= #{lastday}]]>
+	</select>
+	<select id="selectByRoomIdToday" parameterType="HashMap" resultType="domain.ReserveVO">
+		select * from reserve
+		<![CDATA[where ro_id = #{ro_id} and re_startday <= #{today} and re_endday > #{today}]]>
+	</select> 
+	
+	<select id="selectByUser" resultType="domain.ReserveVO">
+		select * from reserve where re_name = #{re_name} and re_phone = #{re_phone} and re_password = #{re_password} order by re_id desc  
+	</select>
+	
+	
+	<insert id="insertRoom">
+		insert into room (ro_name, ro_type, ro_capa, ro_price, ro_use, ro_state, ro_datetime) value (#{ro_name}, #{ro_type}, #{ro_capa}, 0, #{ro_price}, #{ro_state}, now())
+	</insert>
+	
+	<update id="updateRooom">
+		update room set ro_name=#{ro_name}, ro_type=#{ro_type}, ro_capa=#{ro_capa}, ro_price=#{ro_price}, ro_use=#{ro_use}, ro_state=#{ro_state} where ro_id=#{ro_id}
+	</update>
+	
+	<select id="selectRoomList" resultType="domain.RoomVO">
+		select * from room order by ro_id
+	</select>
+	
+	<select id="selectOneRoom" resultType="domain.RoomVO">
+		select * from room where ro_id = #{ro_id}
+	</select>
+
+</mapper>
